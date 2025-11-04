@@ -32,7 +32,7 @@ export default function Navbar({}: Props) {
           Contact
         </Link>
 
-        {isSeller && <button onClick={() => router.push('/dashboard')} className="text-xs border px-4 py-1.5 rounded-full">Seller Dashboard</button>}
+        {isSeller && <button onClick={() => router.push('/dashboard')} className="btn text-xs border px-4 py-1.5 rounded-full">Seller Dashboard</button>}
 
       </div>
 

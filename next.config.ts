@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
                 hostname: 'raw.githubusercontent.com',
                 pathname: '**',
             },
+            {
+                protocol: 'https',
+                hostname: 'img.daisyui.com',
+                pathname: '**',
+            },
         ],
     },
 };
