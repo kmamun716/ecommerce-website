@@ -1,3 +1,4 @@
+import { fetchUsers } from '@/app/lib/data'
 import SearchComp from '@/ui/SearchComp'
 import Pagination from '@/ui/Users/Pagination'
 import Image from 'next/image'
@@ -5,8 +6,9 @@ import React from 'react'
 
 type Props = {}
 
-const Users = (props: Props) => {
-  const handleSearch = () => { }
+const Users = async (props: Props) => {
+  const users = await fetchUsers();
+  console.log(users);
   return (
     <div>
       <SearchComp btnText='Add User' placeholder='Search User.....' btnLink='users/addUser' />
