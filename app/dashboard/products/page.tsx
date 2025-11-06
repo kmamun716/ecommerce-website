@@ -16,11 +16,12 @@ const Products = (props: Props) => {
                   <thead>
                     <tr>
                       <th></th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Mobile</th>
+                      <th>Title</th>
+                      <th>Description</th>
+                      <th>Price</th>
+                      <th>Category</th>
                       <th>Created At</th>
-                      <th>Status</th>
+                      <th>Stock</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -38,12 +39,13 @@ const Products = (props: Props) => {
                             />
                           </div>
                         </div>
-                        <span>Cy Ganderton</span>
+                        <span>I phone</span>
                       </td>
-                      <td>a@b.com</td>
-                      <td>01775299499</td>
+                      <td>apple mobile</td>
+                      <td>$150</td>
+                      <td>Mobile</td>
                       <td>12/16/2020</td>
-                      <td><span className={`bg-yellow-300 p-1 rounded`}>pending</span></td>
+                      <td><span className={`bg-yellow-300 p-1 rounded`}>40 pcs</span></td>
                       <td><button className='btn btn-xs btn-info'>Edit</button> <button className='btn btn-xs bg-red-400'>Delete</button></td>
                     </tr>
                     <tr>
@@ -59,12 +61,13 @@ const Products = (props: Props) => {
                             />
                           </div>
                         </div>
-                        Hart Hagerty
+                        Samsung
                       </td>
-                      <td>a@b.com</td>
-                      <td>01775299499</td>
+                      <td>Mobile</td>
+                      <td>$20</td>
+                      <td>Mobile</td>
                       <td>12/16/2020</td>
-                      <td><span className={`bg-green-300 p-1 rounded`}>success</span></td>
+                      <td><span className={`bg-green-300 p-1 rounded`}>35 pcs</span></td>
                       <td><button className='btn btn-xs btn-info'>Edit</button> <button className='btn btn-xs bg-red-400'>Delete</button></td>
                     </tr>
                   </tbody>

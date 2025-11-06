@@ -2,6 +2,8 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { AppContextProvider } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
+import Navbar from "@/ui/Navbar";
+import Footer from "@/ui/Footer";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -12,13 +14,15 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-      <html lang="en">
-        <body className={`${outfit.className} antialiased text-gray-700`} >
-          <Toaster />
-          <AppContextProvider>
-            {children}
-          </AppContextProvider>
-        </body>
-      </html>
+    <html lang="en">
+      <body className={`${outfit.className} antialiased text-gray-700`} >
+        <Toaster />
+        <AppContextProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </AppContextProvider>
+      </body>
+    </html>
   );
 }
