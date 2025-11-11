@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { MdLogout, MdOutlineSettings, MdOutlineShoppingBag } from "react-icons/md";
+import { MdLogout, MdOutlineSettings, MdOutlineShoppingBag, MdOutlineShoppingCart, MdShop } from "react-icons/md";
 
 type Props = {}
 
@@ -73,6 +73,12 @@ export default function Navbar({ }: Props) {
             </li>
             <li>
               <Link href="" className="justify-start gap-2">
+                <MdOutlineShoppingCart />
+                <span>Cart</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="" className="justify-start gap-2">
                 <MdOutlineShoppingBag />
                 <span>My Orders</span>
               </Link>
@@ -109,6 +115,18 @@ export default function Navbar({ }: Props) {
               <Link href="" className="justify-start gap-2">
                 <MdOutlineSettings />
                 <span>Manage Account</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="" className="justify-start gap-2">
+                <MdShop />
+                <span>Shop</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="" className="justify-start gap-2">
+                <MdOutlineShoppingCart />
+                <span>Cart</span>
               </Link>
             </li>
             <li>
