@@ -48,9 +48,12 @@ export default function Navbar({ }: Props) {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img
+              <Image
                 alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" 
+                width={40}
+                height={40}
+              />
             </div>
           </div>
           <ul
@@ -58,7 +61,7 @@ export default function Navbar({ }: Props) {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow">
             <li>
               <a className="justify-between">
-                <Image className="rounded" width={60} height={60} src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="" />
+                <Image className="rounded" width={60} height={60} src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="user" />
                 <div>
                   <p className="badge">John Doe</p>
                   <p className="text-xs text-gray-500">kazimamun716@gmail.com</p>
@@ -99,9 +102,12 @@ export default function Navbar({ }: Props) {
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img
+              <Image
                 alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" 
+                width={40}
+                height={40}
+              />
             </div>
           </div>
           <ul
