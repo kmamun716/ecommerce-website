@@ -1,5 +1,4 @@
 import React from 'react'
-import { assets } from '@/assets/assets'
 import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
 import StarRating from './Ratings';
@@ -9,7 +8,6 @@ type Props = {}
 
 const ProductCard = ({ product }: any) => {
     const { currency, router } = useAppContext()
-    console.log(product);
     return (
         <div
             onClick={() => { router.push('/products/' + product._id); scrollTo(0, 0) }}
@@ -18,7 +16,7 @@ const ProductCard = ({ product }: any) => {
             <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
                 <Image
                     src={product.gallery[0]}
-                    alt={product.name}
+                    alt={product.title}
                     className="group-hover:scale-105 transition object-cover w-4/5 h-4/5 md:w-full md:h-full"
                     width={800}
                     height={800}

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     await connectToDb();
 
     const formData = await req.formData();
-    // console.log(formData)
+    console.log(formData)
 
     // 📝 Parse fields
     const title = (formData.get("title") as string)?.trim();
@@ -28,7 +28,6 @@ export async function POST(req: Request) {
     const isFeatured = formData.get("isFeatured") === "true";
     const status = (formData.get("status") as string)?.trim() || "active";
     const galleryFiles = formData.getAll("gallery") as File[];
-
     // ⚠️ Validate required fields
     if (!title || !description || !price || !galleryFiles || !category) {
       return NextResponse.json(

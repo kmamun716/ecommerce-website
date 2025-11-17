@@ -26,10 +26,16 @@ export const AppContextProvider = (props) => {
         setProducts(data.products);
     }
 
+    const getProductById = (id) => {
+        return products.find((product) => product._id === id);
+    }
+
+    const featured = products.filter((product) => product.isFeatured);
+
     const fetchUserData = async () => {
         setUserData(userDummyData)
     }
-
+    
     const getCategorys = async () => {
         const res = await fetch('/api/products/categorys');
         const data = await res.json();
@@ -94,7 +100,8 @@ export const AppContextProvider = (props) => {
         cartItems, setCartItems,
         addToCart, updateCartQuantity,
         getCartCount, getCartAmount,
-        categorys, getCategorys
+        categorys, getCategorys,
+        getProductById, featured
     }
 
     return (

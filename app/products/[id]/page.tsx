@@ -15,14 +15,22 @@ const SingleProduct = ({ params }: Props) => {
     const { id } = useParams();
     const [mainImage, setMainImage] = useState<string | null>(null);
     const [productData, setProductData] = useState<any>(null);
-    const { addToCart, router, products } = useAppContext();
+    const { addToCart, router, products, getProductById } = useAppContext();
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${id}`, {
-            cache: 'no-store',
-        })
-            .then((res) => res.json())
-            .then(data => setProductData(data));
-    }, [id])
+        // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${id}`, {
+        //     cache: 'no-store',
+        // })
+        //     .then((res) => res.json())
+        //     .then(data => setProductData(data));
+
+        const getProductData = () => {
+            const product = getProductById(id);
+            if (product !== productData) {
+                setProductData(product);
+            }
+        }
+        getProductData();
+    }, [id, getProductById, productData]);
     return (
         productData ? (<>
             <div className="px-6 md:px-16 lg:px-32 pt-14 space-y-10">
