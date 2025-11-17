@@ -1,41 +1,47 @@
 // app/api/products/route.ts
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/app/lib/utils";
-import { Product } from "@/app/lib/models";
+import { Category, Product } from "@/app/lib/models";
 import { saveImage } from "@/app/lib/middleware/upload/saveImage";
+import mongoose from "mongoose";
 
-//create new product with image upload
 export async function POST(req: Request) {
   try {
     await connectToDb();
 
-    // FormData parse
     const formData = await req.formData();
+    // console.log(formData)
 
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
+    // 📝 Parse fields
+    const title = (formData.get("title") as string)?.trim();
+    const description = (formData.get("description") as string)?.trim();
     const price = Number(formData.get("price"));
     const discountPrice = Number(formData.get("discountPrice")) || 0;
-    const brand = (formData.get("brand") as string) || "";
-    const category = (formData.get("category") as string) || "";
-    const sku = (formData.get("sku") as string) || "";
-    const tags =
-      (formData.get("tags") as string)
-        ?.split(",")
-        .map((t) => t.trim())
-        .filter(Boolean) || [];
+    const brand = (formData.get("brand") as string)?.trim() || "";
+    const category = (formData.get("category") as string)?.trim() || "";
+    const sku = (formData.get("sku") as string)?.trim() || `SKU-${Date.now()}`;
+    const tags = ((formData.get("tags") as string) || "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
     const stock = Number(formData.get("stock")) || 0;
-    const isFeatured = formData.get("isFeatured") === "true" || false;
-    const status =
-      (formData.get("status") as string) || "active";
-
-    const photo = formData.get("photo") as File | null;
+    const isFeatured = formData.get("isFeatured") === "true";
+    const status = (formData.get("status") as string)?.trim() || "active";
     const galleryFiles = formData.getAll("gallery") as File[];
 
-    // 🖼️ Save main photo
-    let photoUrl = "";
-    if (photo) {
-      photoUrl = await saveImage(photo, "product-image");
+    // ⚠️ Validate required fields
+    if (!title || !description || !price || !galleryFiles || !category) {
+      return NextResponse.json(
+        { error: "Title, description, price, category, and gallery photo are required." },
+        { status: 400 }
+      );
+    }
+
+    if (discountPrice > price) {
+      return NextResponse.json(
+        { error: "Discount price cannot exceed regular price." },
+        { status: 400 }
+      );
     }
 
     // 🖼️ Save gallery photos
@@ -45,6 +51,11 @@ export async function POST(req: Request) {
       galleryUrls.push(url);
     }
 
+    //category name to category id
+    const categoryDoc = await Category.findOne({ name: category });
+    if (!categoryDoc) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    }
     // 🧾 Create Product in MongoDB
     const newProduct = await Product.create({
       title,
@@ -52,13 +63,12 @@ export async function POST(req: Request) {
       price,
       discountPrice,
       brand,
-      category,
+      category: categoryDoc._id,
       sku,
       tags,
       stock,
       isFeatured,
       status,
-      photo: photoUrl,
       gallery: galleryUrls,
     });
 
@@ -66,10 +76,10 @@ export async function POST(req: Request) {
       { message: "✅ Product added successfully", product: newProduct },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Error creating product:", error);
     return NextResponse.json(
-      { error: "Failed to create product" },
+      { error: error.message || "Failed to create product" },
       { status: 500 }
     );
   }

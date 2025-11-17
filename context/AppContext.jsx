@@ -1,5 +1,5 @@
 'use client'
-import { productsDummyData, userDummyData } from "@/assets/assets";
+import { userDummyData } from "@/assets/assets";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -18,13 +18,22 @@ export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState(false)
     const [isSeller, setIsSeller] = useState(true)
     const [cartItems, setCartItems] = useState({})
+    const [categorys, setCategorys] = useState([])
 
     const fetchProductData = async () => {
-        setProducts(productsDummyData)
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        setProducts(data.products);
     }
 
     const fetchUserData = async () => {
         setUserData(userDummyData)
+    }
+
+    const getCategorys = async () => {
+        const res = await fetch('/api/products/categorys');
+        const data = await res.json();
+        setCategorys(data.categorys);
     }
 
     const addToCart = async (itemId) => {
@@ -74,12 +83,8 @@ export const AppContextProvider = (props) => {
     }
 
     useEffect(() => {
-        fetchProductData()
-    }, [])
-
-    useEffect(() => {
-        fetchUserData()
-    }, [])
+        fetchProductData();
+    } , [])
 
     const value = {
         currency, router,
@@ -88,7 +93,8 @@ export const AppContextProvider = (props) => {
         products, fetchProductData,
         cartItems, setCartItems,
         addToCart, updateCartQuantity,
-        getCartCount, getCartAmount
+        getCartCount, getCartAmount,
+        categorys, getCategorys
     }
 
     return (

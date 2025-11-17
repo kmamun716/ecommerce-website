@@ -176,7 +176,7 @@ export default function EditProductForm({ }: Props) {
               <legend className="fieldset-legend">Gallery</legend>
               <div className="flex gap-2 mb-2 flex-wrap">
                 {product.gallery?.map((url, i) => (
-                  <Image key={i} src={url} alt={product?.title} className="w-20 h-20 object-cover" />
+                  <Image width={40} height={40} key={i} src={url} alt={product?.title} className="w-20 h-20 object-cover" />
                 ))}
               </div>
               <input

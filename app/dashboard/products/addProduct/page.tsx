@@ -1,7 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const AddProduct = () => {
+  const {getCategorys, categorys} = useAppContext();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -15,8 +19,8 @@ const AddProduct = () => {
     isFeatured: false,
     status: "active",
   });
+  const router = useRouter();
 
-  const [photo, setPhoto] = useState<File | null>(null);
   const [gallery, setGallery] = useState<FileList | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -35,7 +39,6 @@ const AddProduct = () => {
       form.append(key, String(value));
     });
 
-    if (photo) form.append("photo", photo);
     if (gallery) Array.from(gallery).forEach((file) => form.append("gallery", file));
 
     const res = await fetch("/api/products", {
@@ -44,13 +47,16 @@ const AddProduct = () => {
     });
 
     if (res.ok) {
-      alert("✅ Product added successfully!");
+      toast.success("✅ Product added successfully!");
+      router.push("/dashboard/products");
     } else {
-      alert("❌ Something went wrong!");
+      toast.error("❌ Something went wrong!");
     }
   };
 
-
+  useEffect(() => {
+    getCategorys();
+  }, []);
   return (
     <div className="max-w-4xl mx-auto bg-base-200 p-8 rounded-xl shadow-md">
       <h1 className="text-2xl font-bold mb-6 text-center">🛍️ Add New Product</h1>
@@ -108,17 +114,6 @@ const AddProduct = () => {
                 onChange={handleChange}
               />
             </fieldset>
-
-            <fieldset className="fieldset">
-              <legend className="fieldset-legend">Product Photo</legend>
-              <input
-                type="file"
-                className="file-input file-input-bordered w-full"
-                accept="image/*"
-                onChange={(e) => setPhoto(e.target.files?.[0] || null)}
-              />
-            </fieldset>
-
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Gallery (Multiple Images)</legend>
               <input
@@ -143,10 +138,13 @@ const AddProduct = () => {
                 required
               >
                 <option value="">Pick a Category</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-                <option value="beauty">Beauty</option>
-                <option value="grocery">Grocery</option>
+                {
+                  categorys.map((cat: any) => (
+                    <option key={cat._id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))
+                }
               </select>
             </fieldset>
 

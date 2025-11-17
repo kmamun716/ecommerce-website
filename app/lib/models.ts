@@ -15,7 +15,6 @@ const productSchema = new mongoose.Schema({
     description: { type: String, required: true},
     price: { type: Number, required: true, min: 0 },
     discountPrice: { type: Number, min: 0 },
-    photo: { type: String, required: true },
     gallery: [{ type: String }],
     stock: { type: Number, required: true, min: 0  },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
@@ -35,6 +34,13 @@ const productSchema = new mongoose.Schema({
     numReviews: { type: Number, default: 0 },    
 }, { timestamps: true });
 
+const categorySchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    photo: { type: String },
+}, { timestamps: true });
+
 
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
+export const Category = mongoose.models.Category || mongoose.model("Category", categorySchema);
