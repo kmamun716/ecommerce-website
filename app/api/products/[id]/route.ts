@@ -6,14 +6,11 @@ import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 
-interface ProductContext {
-  params: Promise<{ id: string }>; // 👈 because params is async
-}
 
 //get single product by id
-export async function GET(req: Request, context: ProductContext) {
+export async function GET(req: Request, ctx: RouteContext<'/api/products/[id]'>) {
   try {
-    const {id} = await context.params;
+    const {id} = await ctx.params;
     await connectToDb();
     const product = await Product.findById(id).populate("category", "name");
     if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });

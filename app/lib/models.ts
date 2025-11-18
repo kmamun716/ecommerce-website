@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// User Schema
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -10,6 +11,7 @@ const userSchema = new mongoose.Schema({
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
 }, { timestamps: true });
 
+// Product Schema
 const productSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true},
@@ -34,13 +36,31 @@ const productSchema = new mongoose.Schema({
     numReviews: { type: Number, default: 0 },    
 }, { timestamps: true });
 
+// Category Schema
 const categorySchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     description: { type: String },
     photo: { type: String },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+}, { timestamps: true });
+
+// Coupon Schema
+const couponSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+}, { timestamps: true });
+
+// Cart Schema
+const cartSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+    description: { type: String },
+    photo: { type: String },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 }, { timestamps: true });
 
 
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 export const Category = mongoose.models.Category || mongoose.model("Category", categorySchema);
+export const Coupon = mongoose.models.Coupon || mongoose.model("Coupon", couponSchema);

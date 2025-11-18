@@ -30,7 +30,7 @@ const ProductCard = ({ product, currency }: Props) => {
             <Link href={`/products/${product._id}`} className="md:text-base font-medium pt-2 w-full truncate">
                 {product.title}
             </Link>
-            <Link href={`/products/category/${product.category._id}`} className="link text-blue-400">
+            <Link href={`/products/categorys/${product.category._id}`} className="link text-blue-400">
                 {product.category.name}
             </Link>
             <p className="w-full text-xs text-gray-500/70 max-sm:hidden truncate">
@@ -49,7 +49,7 @@ const ProductCard = ({ product, currency }: Props) => {
                 </p>
                 {/* Note: The button onClick function is now irrelevant in a server component */}
                 <Link href={`/products/${product._id}`}>
-                    <button className="btn max-sm:hidden px-4 py-1.5 text-gray-500 border border-gray-500/20 rounded-full text-xs hover:bg-slate-50 transition">
+                    <button className="max-sm:hidden px-4 py-1.5 text-gray-500 border border-gray-500/20 rounded-full text-xs hover:btn btn-sm transition">
                         Buy now
                     </button>
                 </Link>

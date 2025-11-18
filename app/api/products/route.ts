@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { connectToDb } from "@/app/lib/utils";
 import { Category, Product } from "@/app/lib/models";
 import { saveImage } from "@/app/lib/middleware/upload/saveImage";
-import mongoose from "mongoose";
 
+//create new product
 export async function POST(req: Request) {
   try {
     await connectToDb();
@@ -70,6 +70,10 @@ export async function POST(req: Request) {
       status,
       gallery: galleryUrls,
     });
+    //update category's products array
+    await Category.findByIdAndUpdate(categoryDoc._id, {
+      $push: { products: newProduct._id },
+    });
 
     return NextResponse.json(
       { message: "✅ Product added successfully", product: newProduct },
@@ -117,7 +121,7 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([
-      Product.find(query).populate('category','name').sort(sortOptions[sort] || {}).skip(skip).limit(limit),
+      Product.find(query).populate('category', 'name').sort(sortOptions[sort] || {}).skip(skip).limit(limit),
       Product.countDocuments(query),
     ]);
 
