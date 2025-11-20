@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import SocialLogin from "@/ui/SocialLogin";
 
 const Login = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Login = () => {
       });
 
       setLoading(false);
-
+      console.log(res);
       if (res?.error) {
         toast.error(res.error);
       } else {
@@ -36,10 +37,6 @@ const Login = () => {
     }
   };
 
-  const handleSocialLogin = async (provider: "google" | "facebook") => {
-    setLoading(true);
-    await signIn(provider, { callbackUrl: "/dashboard" });
-  };
 
   return (
     <div className="flex flex-col gap-4 items-center my-4">
@@ -79,23 +76,8 @@ const Login = () => {
         </button>
       </form>
 
-      <div className="flex flex-col gap-2 mt-4 w-full max-w-xs">
-        <button
-          className="btn btn-red"
-          onClick={() => handleSocialLogin("google")}
-          disabled={loading}
-        >
-          Continue with Google
-        </button>
-
-        <button
-          className="btn btn-blue"
-          onClick={() => handleSocialLogin("facebook")}
-          disabled={loading}
-        >
-          Continue with Facebook
-        </button>
-      </div>
+      {/* social login */}
+      <SocialLogin loading={loading} setLoading={setLoading} />
 
       <p className="mt-4">
         Don't have an account?
