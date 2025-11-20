@@ -1,21 +1,67 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { connectToDb } from "@/app/lib/utils";
 import { User } from "@/app/lib/models";
+import { connectToDb } from "@/app/lib/utils";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { email, password, ...rest } = body;
+  try {
+    const { name, email, mobile, password } = await req.json();
 
-  if (!email || !password) return NextResponse.json({ error: "Email and password required" }, { status: 400 });
+    // Basic validation
+    if (!name || !email || !mobile || !password) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
 
-  await connectToDb();
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) return NextResponse.json({ error: "User already exists" }, { status: 400 });
+    // Mobile validation
+    if (!/^[0-9]{10,15}$/.test(mobile)) {
+      return NextResponse.json(
+        { error: "Invalid mobile number" },
+        { status: 400 }
+      );
+    }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({email, password: hashedPassword, ...rest });
+    await connectToDb();
 
-  return NextResponse.json({ message: "User created", user: { id: user._id, email: user.email, name: user.name } }, { status: 201 });
+    // Check duplicate
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Email already exists" },
+        { status: 409 }
+      );
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
+      name,
+      email,
+      mobile,
+      password: hashPassword,
+    });
+
+    return NextResponse.json(
+      { message: "Registration successful!" },
+      { status: 201 }
+    );
+
+  } catch (error) {
+    console.error("Register Error:", error);
+    return NextResponse.json(
+      { error: "Server error, please try again" },
+      { status: 500 }
+    );
+  }
 }

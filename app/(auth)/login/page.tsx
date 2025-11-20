@@ -1,49 +1,110 @@
 "use client";
-import { signIn } from 'next-auth/react';
-import Link from 'next/link'
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
-type Props = {}
-
-const Login = (props: Props) => {
+const Login = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res: any = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
 
-    if (res?.ok) {
-      router.push("/dashboard"); // successful login
-    } else {
-      toast.error(res?.error || "Login failed");
+      setLoading(false);
+
+      if (res?.error) {
+        toast.error(res.error);
+      } else {
+        toast.success("Login successful");
+        router.push("/dashboard"); // redirect after login
+      }
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something went wrong");
     }
   };
+
+  const handleSocialLogin = async (provider: "google" | "facebook") => {
+    setLoading(true);
+    await signIn(provider, { callbackUrl: "/dashboard" });
+  };
+
   return (
-    <div className='flex flex-col gap-4 items-center my-2'>
-      <h1 className='text-xl underline'>Login Here</h1>
-      <form onSubmit={handleSubmit} className='flex flex-col w-full max-w-xs'>
+    <div className="flex flex-col gap-4 items-center my-4">
+      <h1 className="text-xl underline">Login</h1>
+
+      <form onSubmit={handleCredentialsLogin} className="flex flex-col w-full max-w-xs">
         <fieldset className="fieldset">
           <legend className="fieldset-legend">Email</legend>
-          <input type="email" onChange={(e) => setEmail(e.target.value)} className="input" placeholder="Your Email" required />
+          <input
+            type="email"
+            placeholder="Your Email"
+            className="input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </fieldset>
+
         <fieldset className="fieldset">
           <legend className="fieldset-legend">Password</legend>
-          <input type="password" onChange={(e) => setPassword(e.target.value)} className="input" placeholder="Your Password" required />
+          <input
+            type="password"
+            placeholder="Your Password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </fieldset>
-        <button type="submit" className="btn btn-primary mt-4">Login</button>
-      </form>
-      <p>Not have any account?<Link href="/register" className='text-blue-600 underline'> Register Here</Link></p>
-    </div>
-  )
-}
 
-export default Login
+        <button
+          type="submit"
+          className="btn btn-primary mt-4"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <div className="flex flex-col gap-2 mt-4 w-full max-w-xs">
+        <button
+          className="btn btn-red"
+          onClick={() => handleSocialLogin("google")}
+          disabled={loading}
+        >
+          Continue with Google
+        </button>
+
+        <button
+          className="btn btn-blue"
+          onClick={() => handleSocialLogin("facebook")}
+          disabled={loading}
+        >
+          Continue with Facebook
+        </button>
+      </div>
+
+      <p className="mt-4">
+        Don't have an account?
+        <Link href="/register" className="text-blue-600 underline ml-1">
+          Register
+        </Link>
+      </p>
+    </div>
+  );
+};
+
+export default Login;
