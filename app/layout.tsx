@@ -1,9 +1,8 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { AppContextProvider } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
-import Navbar from "@/ui/Navbar";
 import Footer from "@/ui/Footer";
+import NavbarWrapper from "@/ui/NavbarWrapper";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -12,16 +11,15 @@ export const metadata = {
   description: "E-Commerce with Next.js ",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${outfit.className} antialiased text-gray-700`} >
         <Toaster />
-        <AppContextProvider>
-          <Navbar />
+        <NavbarWrapper >
           {children}
-          <Footer />
-        </AppContextProvider>
+        </NavbarWrapper >
+        <Footer />
       </body>
     </html>
   );

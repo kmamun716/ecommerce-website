@@ -86,9 +86,25 @@ const cartSchema = new mongoose.Schema({
     totalPrice: { type: Number, default: 0 },
 }, { timestamps: true });
 
+//order item Schema to know user's order items
+const OrderItemSchema = new mongoose.Schema(
+  {
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+    qty: { type: Number, required: true, min: 1 },
+    price: { type: Number, required: true, min: 0 },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
+    },
+  },
+  { _id: false }
+);
+
 //order Schema
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    buyerMobile: { type: String, required: true, index: true },  // <-- Added
     items: [
         {
             product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
@@ -112,6 +128,7 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: { type: String, enum: ["cod", "online"], default: "cod" },
 }, { timestamps: true });
+
 
 
 

@@ -8,11 +8,13 @@ import { connectToDb } from "@/app/lib/utils";
 import { User } from "@/app/lib/models";
 import clientPromise from "@/app/lib/mongodb-client";
 
-
 export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
+
   session: { strategy: "jwt" },
+
   providers: [
+    /* -------------------- LOCAL LOGIN -------------------- */
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -21,50 +23,92 @@ export const authOptions = {
       },
       async authorize(credentials) {
         await connectToDb();
-        const user = await User.findOne({ email: credentials?.email });
-        if (!user) throw new Error("No user found");
 
-        const isValid = await bcrypt.compare(credentials!.password, user.password!);
-        if (!isValid) throw new Error("Invalid password");
+        const found = await User.findOne({ email: credentials?.email });
+        if (!found) throw new Error("No user found");
 
-        return { id: user._id.toString(), email: user.email, name: user.name };
+        const passOK = await bcrypt.compare(credentials!.password, found.password!);
+        if (!passOK) throw new Error("Invalid password");
+
+        return {
+          id: found._id.toString(),
+          email: found.email,
+          name: found.name,
+          image: found.photo,
+        };
       },
     }),
+
+    /* -------------------- GOOGLE -------------------- */
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
+
+    /* -------------------- FACEBOOK -------------------- */
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     }),
   ],
+
   pages: { signIn: "/login" },
   secret: process.env.NEXTAUTH_SECRET,
+
+  /* ========================================================
+     CALLBACKS
+   ======================================================== */
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      // save social login user in DB if first time
-      if (account && (account.provider === "google" || account.provider === "facebook")) {
+    /* -------------------- SIGN IN -------------------- */
+    async signIn({ user, account }) {
+      if (!account) return true;
+
+      // SOCIAL LOGIN: google/facebook
+      if (account.provider === "google" || account.provider === "facebook") {
         await connectToDb();
-        const exists = await User.findOne({ email: user.email });
-        if (!exists) {
-          await User.create({
-            name: user.name,
-            email: user.email,
+
+        // Provider unique ID
+        const providerId = account.providerAccountId;
+
+        // 1. Try to find by providerId
+        let existing = await User.findOne({ providerId });
+
+        // 2. If not found by providerId, check by email
+        if (!existing && user.email) {
+          existing = await User.findOne({ email: user.email });
+        }
+
+        // 3. Create new user if not exists
+        if (!existing) {
+          existing = await User.create({
+            name: user.name || "",
+            email: user.email || null,
+            photo: user.image || "",
             provider: account.provider,
-            providerId: user.id,
-            photo: user.image,
+            providerId: providerId,
           });
         }
+
+        // Set returned user.id to internal MongoDB ID
+        user.id = existing._id.toString();
       }
+
       return true;
     },
+
+    /* -------------------- JWT TOKEN -------------------- */
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+      }
       return token;
     },
+
+    /* -------------------- SESSION -------------------- */
     async session({ session, token }) {
-      if (token) session.user.id = token.id;
+      if (token && session.user) {
+        session.user.id = token.id;
+      }
       return session;
     },
   },
