@@ -1,5 +1,4 @@
 "use client"
-import React, { useState } from "react";
 import { assets } from "@/assets/assets";
 import Link from "next/link"
 import { useAppContext } from "@/context/AppContext";
@@ -52,8 +51,8 @@ export default function Navbar({ }: Props) {
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Image
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  alt={session.data.user?.name || "User"}
+                  src={session.data.user?.image || assets.user_icon2}
                   width={40}
                   height={40}
                 />
@@ -64,7 +63,13 @@ export default function Navbar({ }: Props) {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow">
               <li>
                 <a className="justify-between">
-                  <Image className="rounded" width={60} height={60} src="https://img.daisyui.com/images/profile/demo/4@94.webp" alt="user" />
+                  <Image 
+                    className="rounded" 
+                    width={60} 
+                    height={60} 
+                    src={session.data.user?.image || assets.user_icon} 
+                    alt={session.data.user?.name || "User"} 
+                  />
                   <div>
                     <p className="badge">{session.data.user?.name}</p>
                     <p className="text-xs text-gray-500">{session.data.user?.email}</p>
@@ -72,13 +77,13 @@ export default function Navbar({ }: Props) {
                 </a>
               </li>
               <li>
-                <Link href="" className="justify-start gap-2">
+                <Link href="/account" className="justify-start gap-2">
                   <MdOutlineSettings />
                   <span>Manage Account</span>
                 </Link>
               </li>
               <li>
-                <Link href="" className="justify-start gap-2">
+                <Link href="/cart" className="justify-start gap-2">
                   <MdOutlineShoppingCart />
                   <span>Cart</span>
                 </Link>
@@ -108,8 +113,8 @@ export default function Navbar({ }: Props) {
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Image
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  alt={session.data.user?.name || "User"}
+                  src={session.data.user?.image || assets.user_icon2}
                   width={40}
                   height={40}
                 />

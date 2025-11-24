@@ -29,12 +29,12 @@ export const authOptions = {
 
         const passOK = await bcrypt.compare(credentials!.password, found.password!);
         if (!passOK) throw new Error("Invalid password");
-
         return {
           id: found._id.toString(),
           email: found.email,
           name: found.name,
           image: found.photo,
+          isAdmin: found.isAdmin,
         };
       },
     }),
@@ -86,11 +86,13 @@ export const authOptions = {
             photo: user.image || "",
             provider: account.provider,
             providerId: providerId,
+            isAdmin: false,
           });
         }
 
         // Set returned user.id to internal MongoDB ID
         user.id = existing._id.toString();
+        user.isAdmin = existing.isAdmin;
       }
 
       return true;
@@ -100,6 +102,7 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.isAdmin = user.isAdmin ?? false;
       }
       return token;
     },
@@ -108,6 +111,7 @@ export const authOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id;
+        session.user.isAdmin = token.isAdmin ?? false;
       }
       return session;
     },

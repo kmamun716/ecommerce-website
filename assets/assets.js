@@ -1,6 +1,7 @@
 import logo from "./logo.svg";
 import search_icon from "./search_icon.svg";
 import user_icon from "./user_icon.svg";
+import user_icon2 from "./user-icon.png";
 import cart_icon from "./cart_icon.svg";
 import add_icon from "./add_icon.svg";
 import order_icon from "./order_icon.svg";
@@ -51,6 +52,7 @@ export const assets = {
   logo,
   search_icon,
   user_icon,
+  user_icon2,
   cart_icon,
   add_icon,
   order_icon,

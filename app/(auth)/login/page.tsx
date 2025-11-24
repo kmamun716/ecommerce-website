@@ -24,7 +24,6 @@ const Login = () => {
       });
 
       setLoading(false);
-      console.log(res);
       if (res?.error) {
         toast.error(res.error);
       } else {
