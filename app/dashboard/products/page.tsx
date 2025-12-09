@@ -11,7 +11,10 @@ interface Product {
   title: string;
   description: string;
   price: number;
-  category: string;
+  category: {
+    name: string;
+    _id: string;
+  };
   createdAt: string;
   stock: number;
   photo?: string;
@@ -32,6 +35,7 @@ const Products = (props: Props) => {
     try {
       const res = await fetch("/api/products");
       const data = await res.json();
+      // console.log(data)
       setProducts(data.products || []);
     } catch (err) {
       console.error("Failed to fetch products:", err);
@@ -87,7 +91,7 @@ const Products = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {products.map((p, index) => (
+                {products?.map((p, index) => (
                   <tr key={p._id}>
                     <th>{index + 1}</th>
                     <td className="flex items-center gap-2">
@@ -107,7 +111,7 @@ const Products = (props: Props) => {
                     </td>
                     <td>{p.description}</td>
                     <td>${p.price}</td>
-                    <td>{p.category}</td>
+                    <td>{p.category.name}</td>
                     <td>{new Date(p.createdAt).toLocaleDateString()}</td>
                     <td>
                       <span

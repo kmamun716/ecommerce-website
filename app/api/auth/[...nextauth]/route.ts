@@ -93,6 +93,7 @@ export const authOptions = {
         // Set returned user.id to internal MongoDB ID
         user.id = existing._id.toString();
         user.isAdmin = existing.isAdmin;
+        user.image = existing.photo || user.image; 
       }
 
       return true;
@@ -103,6 +104,7 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin ?? false;
+        token.image = user.image ?? null;  
       }
       return token;
     },
@@ -112,6 +114,7 @@ export const authOptions = {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.isAdmin = token.isAdmin ?? false;
+        session.user.image = token.image ?? null;
       }
       return session;
     },

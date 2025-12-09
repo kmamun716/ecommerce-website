@@ -5,6 +5,7 @@ import React from 'react'
 type Props = {}
 
 const layout = ({ children }: any) => {
+    
     return (
         <div className='dashboard-container flex'>
             <div className="flex-1 sticky top-0 h-screen">
